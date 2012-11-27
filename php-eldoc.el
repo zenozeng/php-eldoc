@@ -1,7 +1,6 @@
 ;;; php-eldoc.el --- eldoc-mode plugin for PHP source code
 
 ;; Copyright (C) 2012  Zeno Zeng
-;; Copyright (C) 2012  Arne Jørgensen;
 
 ;; Author: Zeno Zeng <zenoes@qq.com>
 ;; Keywords: 
@@ -41,7 +40,10 @@
 (defun php-eldoc-function ()
   "Get function arguments for PHP function at point."
   (when (require 'php-extras-eldoc-functions)
-    (gethash (php-eldoc-get-function-name) php-extras-function-arguments)))
+    (gethash
+     (ignore-errors
+       (php-eldoc-get-function-name))
+     php-extras-function-arguments)))
 
 (defun php-eldoc-get-function-name ()
   ""
@@ -81,10 +83,10 @@
 				       nil))
 				   (re-search-backward "[ ]+" nil t)
 				   (point-min))))
-	   (replace-regexp-in-string " " "" 
-				     (buffer-substring-no-properties	
-				      function-name-beg
-				      function-name-end)))))))
+	  (replace-regexp-in-string " " "" 
+				    (buffer-substring-no-properties	
+				     function-name-beg
+				     function-name-end)))))))
 
 (provide 'php-eldoc)
 ;;; php-eldoc.el ends here
