@@ -29,8 +29,6 @@
 ;; 	      'php-eldoc-function)
 ;; 	     (eldoc-mode)))
 
-;; TODO: Highlighting Eldoc Arguments
-
 ;; 不支持跨行参数
 
 ;;; Code:
@@ -77,7 +75,7 @@
 
 	(let* ((function-name-end (point))
 	       (function-name-beg (or
-				   (let* ((x (re-search-backward "(" nil t)))
+				   (let* ((x (re-search-backward "\\((\\|@\\|!\\)" nil t)))
 				     (if x
 					 (+ x 1)
 				       nil))
