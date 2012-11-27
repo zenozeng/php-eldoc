@@ -1,6 +1,7 @@
 ;;; php-eldoc.el --- eldoc-mode plugin for PHP source code
 
 ;; Copyright (C) 2012  Zeno Zeng
+;; Copyright (C) 2012  Arne Jørgensen;
 
 ;; Author: Zeno Zeng <zenoes@qq.com>
 ;; Keywords: 
