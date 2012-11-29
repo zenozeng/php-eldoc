@@ -6,6 +6,9 @@ The hash table is mostly based on Arne Jørgensen's php-extras.
 
 Eldoc-mode is a MinorMode which shows you, in the echo area, the argument list of the function call you are currently writing. Very handy. By NoahFriedman. 
 
+![Alt text](./screentshot.png)
+
+
 Licensing
 =========
 
