@@ -37,14 +37,6 @@
 
 (defun php-eldoc-function ()
   "Get function arguments for PHP function at point."
-  (when (require 'php-extras-eldoc-functions)
-    (gethash
-     (ignore-errors
-       (php-eldoc-get-function-name))
-     php-extras-function-arguments)))
-
-(defun php-eldoc-get-function-name ()
-  ""
   (interactive)
   (save-excursion
     (save-restriction
@@ -52,7 +44,8 @@
 
       ;; 跳过内部的函数_如跳过内部的gileget()__ fileget( gileget() , 'and');
       ;; 并前进到函数名称末尾
-      (let* ((right 0)
+      (let* ((ori-position (point))
+	     (right 0)
 	     (left 0))
 
 	(while (and
@@ -72,7 +65,6 @@
 		   " ")
 	  (goto-char (- (point) 1)))
 
-
 	(let* ((function-name-end (point))
 	       (function-name-beg (or
 				   (let* ((x (re-search-backward "\\((\\|@\\|!\\)" nil t)))
@@ -81,10 +73,62 @@
 				       nil))
 				   (re-search-backward "[ ]+" nil t)
 				   (point-min))))
-	  (replace-regexp-in-string " " "" 
-				    (buffer-substring-no-properties	
-				     function-name-beg
-				     function-name-end)))))))
+	  (let* ((function-name
+		  (replace-regexp-in-string
+		   " " "" 
+		   (buffer-substring-no-properties	
+		    function-name-beg
+		    function-name-end))))
+
+	    ;; get arg index
+	    ;; 从1开始计数
+	    
+	    (goto-char function-name-end)
+	    (widen)
+	    (narrow-to-region (point) ori-position)
+
+	    ;; 跳过函数后面的空格，括号
+	    (re-search-forward " *( *" nil t)
+
+	    (let* ((left 0)
+	    	   (right 0)
+	    	   (arg-index 0))
+
+	      (while (re-search-forward "\\((\\|)\\|,\\)" nil t)
+
+		(message "while")
+
+	    	(if (equal (buffer-substring-no-properties
+	    		    (point)
+	    		    (- (point) 1))
+	    		   "(")
+	    	    (setq left (+ left 1)))
+
+
+	    	(if (equal (buffer-substring-no-properties
+	    		    (point)
+	    		    (- (point) 1))
+	    		   ")")
+	    	    (setq right (+ right 1)))
+
+
+	    	(if (and (equal (buffer-substring-no-properties
+	    			 (point)
+	    			 (- (point) 1))
+	    			",")
+	    		 (= left right))
+	    	    (setq arg-index (+ arg-index 1))))
+
+	      (setq arg-index (+ arg-index 1))
+	      (message (concat "left:" (number-to-string left)))
+	      (message (concat "right:" (number-to-string right)))
+	      (message (concat "arg-index:" (number-to-string arg-index))))
+
+	    (when (require 'php-extras-eldoc-functions)
+	      (gethash	
+	       function-name
+	       php-extras-function-arguments)))
+	  )))))
 
 (provide 'php-eldoc)
 ;;; php-eldoc.el ends here
