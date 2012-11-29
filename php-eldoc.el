@@ -37,98 +37,116 @@
 
 (defun php-eldoc-function ()
   "Get function arguments for PHP function at point."
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (narrow-to-region (line-beginning-position) (point))
+  (ignore-errors
+    (save-excursion
+      (save-restriction
+	(narrow-to-region (line-beginning-position) (point))
 
-      ;; 跳过内部的函数_如跳过内部的gileget()__ fileget( gileget() , 'and');
-      ;; 并前进到函数名称末尾
-      (let* ((ori-position (point))
-	     (right 0)
-	     (left 0))
+	;; 跳过内部的函数_如跳过内部的gileget()__ fileget( gileget() , 'and');
+	;; 并前进到函数名称末尾
+	(let* ((ori-position (point))
+	       (right 0)
+	       (left 0))
 
-	(while (and
-		(<= left right)
-		(re-search-backward-greedy "\\((\\|)\\)" nil t))
-	  (if (equal (buffer-substring-no-properties
-		      (point)
-		      (+ (point) 1))
-		     "(")
-	      (setq left (+ left 1))
-	    (setq right (+ right 1))))
+	  (while (and
+		  (<= left right)
+		  (re-search-backward-greedy "\\((\\|)\\)" nil t))
+	    (if (equal (buffer-substring-no-properties
+			(point)
+			(+ (point) 1))
+		       "(")
+		(setq left (+ left 1))
+	      (setq right (+ right 1))))
 
-	(while
-	    (equal (buffer-substring-no-properties
-		    (- (point) 1)
-		    (point))
-		   " ")
-	  (goto-char (- (point) 1)))
+	  (while
+	      (equal (buffer-substring-no-properties
+		      (- (point) 1)
+		      (point))
+		     " ")
+	    (goto-char (- (point) 1)))
 
-	(let* ((function-name-end (point))
-	       (function-name-beg (or
-				   (let* ((x (re-search-backward "\\((\\|@\\|!\\)" nil t)))
-				     (if x
-					 (+ x 1)
-				       nil))
-				   (re-search-backward "[ ]+" nil t)
-				   (point-min))))
-	  (let* ((function-name
-		  (replace-regexp-in-string
-		   " " "" 
-		   (buffer-substring-no-properties	
-		    function-name-beg
-		    function-name-end))))
+	  (let* ((function-name-end (point))
+		 (function-name-beg (or
+				     (let* ((x (re-search-backward "\\((\\|@\\|!\\)" nil t)))
+				       (if x
+					   (+ x 1)
+					 nil))
+				     (re-search-backward "[ ]+" nil t)
+				     (point-min))))
+	    (let* ((function-name
+		    (replace-regexp-in-string
+		     " " "" 
+		     (buffer-substring-no-properties	
+		      function-name-beg
+		      function-name-end))))
 
-	    ;; get arg index
-	    ;; 从1开始计数
-	    
-	    (goto-char function-name-end)
-	    (widen)
-	    (narrow-to-region (point) ori-position)
+	      ;; get arg index
+	      ;; 从0开始计数
+	      
+	      (goto-char function-name-end)
+	      (widen)
+	      (narrow-to-region (point) ori-position)
 
-	    ;; 跳过函数后面的空格，括号
-	    (re-search-forward " *( *" nil t)
+	      ;; 跳过函数后面的空格，括号
+	      (re-search-forward " *( *" nil t)
 
-	    (let* ((left 0)
-	    	   (right 0)
-	    	   (arg-index 0))
+	      (let* ((left 0)
+		     (right 0)
+		     (arg-index 0))
 
-	      (while (re-search-forward "\\((\\|)\\|,\\)" nil t)
+		(while (re-search-forward "\\((\\|)\\|,\\)" nil t)
 
-		(message "while")
+		  (message "while")
 
-	    	(if (equal (buffer-substring-no-properties
-	    		    (point)
-	    		    (- (point) 1))
-	    		   "(")
-	    	    (setq left (+ left 1)))
-
-
-	    	(if (equal (buffer-substring-no-properties
-	    		    (point)
-	    		    (- (point) 1))
-	    		   ")")
-	    	    (setq right (+ right 1)))
+		  (if (equal (buffer-substring-no-properties
+			      (point)
+			      (- (point) 1))
+			     "(")
+		      (setq left (+ left 1)))
 
 
-	    	(if (and (equal (buffer-substring-no-properties
-	    			 (point)
-	    			 (- (point) 1))
-	    			",")
-	    		 (= left right))
-	    	    (setq arg-index (+ arg-index 1))))
+		  (if (equal (buffer-substring-no-properties
+			      (point)
+			      (- (point) 1))
+			     ")")
+		      (setq right (+ right 1)))
 
-	      (setq arg-index (+ arg-index 1))
-	      (message (concat "left:" (number-to-string left)))
-	      (message (concat "right:" (number-to-string right)))
-	      (message (concat "arg-index:" (number-to-string arg-index))))
 
-	    (when (require 'php-extras-eldoc-functions)
-	      (gethash	
-	       function-name
-	       php-extras-function-arguments)))
-	  )))))
+		  (if (and (equal (buffer-substring-no-properties
+				   (point)
+				   (- (point) 1))
+				  ",")
+			   (= left right))
+		      (setq arg-index (+ arg-index 1))))
+
+		(when (require 'php-extras-eldoc-functions)
+		  (let* ((function-doc (gethash	
+					function-name
+					php-extras-function-arguments)
+				       )
+			 (function-doc-current-arg))
+
+
+		    (setq function-doc-current-arg
+			  (replace-regexp-in-string (concat "[^(,]*(\\([^,]*,\\)\\{" (number-to-string arg-index) "\\}") "" function-doc))
+
+		    (message "try")
+		    (message function-doc-current-arg)
+
+
+		    (setq function-doc-current-arg
+			  (replace-regexp-in-string ",.*" ""  function-doc-current-arg))
+		    (setq function-doc-current-arg
+			  (replace-regexp-in-string "\\(\\[\\|\\]\\)" "" function-doc-current-arg))
+
+		    (setq function-doc
+			  (replace-regexp-in-string
+			   function-doc-current-arg
+			   (propertize function-doc-current-arg
+				       'face 'font-lock-variable-name-face)
+			   function-doc))
+
+		    function-doc))))))))))
 
 (provide 'php-eldoc)
 ;;; php-eldoc.el ends here
