@@ -22,6 +22,7 @@
 
 ;; config
 
+;; (require 'php-eldoc)
 ;; (add-hook 'php+-mode-hook
 ;; 	  '(lambda ()
 ;; 	     (set
