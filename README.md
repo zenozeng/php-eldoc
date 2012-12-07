@@ -36,7 +36,6 @@ Usage
 ======
 
 ```emacs-lisp
-(require 'php-eldoc)
 (add-hook 'php+-mode-hook
 	  '(lambda ()
 	     (set

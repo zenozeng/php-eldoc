@@ -36,6 +36,7 @@
 (eval-when-compile
   (require 'cl nil t))
 
+;;;###autoload
 (defun php-eldoc-function ()
   "Get function arguments for PHP function at point."
   (ignore-errors
