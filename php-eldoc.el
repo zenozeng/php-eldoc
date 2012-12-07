@@ -150,5 +150,22 @@
 
 		    function-doc))))))))))
 
+;;;###autoload
+(add-hook 'php+-mode-hook
+	  '(lambda ()
+	     (set
+	      (make-local-variable 'eldoc-documentation-function)
+	      'php-eldoc-function)
+	     (eldoc-mode)))
+
+;;;###autoload
+(add-hook 'php-mode-hook
+	  '(lambda ()
+	     (set
+	      (make-local-variable 'eldoc-documentation-function)
+	      'php-eldoc-function)
+	     (eldoc-mode)))
+
+
 (provide 'php-eldoc)
 ;;; php-eldoc.el ends here
