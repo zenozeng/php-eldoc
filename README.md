@@ -9,6 +9,13 @@ Eldoc-mode is a MinorMode which shows you, in the echo area, the argument list o
 ![Alt text](https://raw.github.com/zenozeng/php-eldoc/master/screenshot.png)
 
 
+Usage
+=========
+
+Use https://github.com/dimitri/el-get for an easy install, or put the css-eldoc somewhere in your load-path.
+
+
+
 Licensing
 =========
 
@@ -31,16 +38,4 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-   
-Usage
-======
-
-```emacs-lisp
-(add-hook 'php+-mode-hook
-	  '(lambda ()
-	     (set
-  	      (make-local-variable 'eldoc-documentation-function)
-  	      'php-eldoc-function)
- 	     (eldoc-mode)))
-```
    
