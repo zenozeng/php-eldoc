@@ -12,7 +12,7 @@ Eldoc-mode is a MinorMode which shows you, in the echo area, the argument list o
 Usage
 =========
 
-Use https://github.com/dimitri/el-get for an easy install, or put the css-eldoc somewhere in your load-path.
+Use https://github.com/dimitri/el-get for an easy install, or put the php-eldoc somewhere in your load-path.
 
 
 
