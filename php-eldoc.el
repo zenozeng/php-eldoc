@@ -150,22 +150,20 @@
 		    function-doc))))))))))
 
 ;;;###autoload
-(if (boundp 'php+-mode-hook)
-    (add-hook 'php+-mode-hook
-	      '(lambda ()
-		 (set
-		  (make-local-variable 'eldoc-documentation-function)
-		  'php-eldoc-function)
-		 (eldoc-mode))))
+(add-hook 'php+-mode-hook
+	  '(lambda ()
+	     (set
+	      (make-local-variable 'eldoc-documentation-function)
+	      'php-eldoc-function)
+	     (eldoc-mode)))
 
 ;;;###autoload
-(if (boundp 'php-mode-hook)
-    (add-hook 'php-mode-hook
-	      '(lambda ()
-		 (set
-		  (make-local-variable 'eldoc-documentation-function)
-		  'php-eldoc-function)
-		 (eldoc-mode))))
+(add-hook 'php-mode-hook
+	  '(lambda ()
+	     (set
+	      (make-local-variable 'eldoc-documentation-function)
+	      'php-eldoc-function)
+	     (eldoc-mode)))
 
 
 (provide 'php-eldoc)
