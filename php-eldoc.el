@@ -52,7 +52,7 @@
 
 	  (while (and
 		  (<= left right)
-		  (re-search-backward-greedy "\\((\\|)\\)" nil t))
+		  (re-search-backward "\\((\\|)\\)" nil t))
 	    (if (equal (buffer-substring-no-properties
 			(point)
 			(+ (point) 1))
@@ -69,7 +69,7 @@
 
 	  (let* ((function-name-end (point))
 		 (function-name-beg (or
-				     (let* ((x (re-search-backward "\\((\\|@\\|!\\)" nil t)))
+				     (let* ((x (re-search-backward "\\((\\|@\\|,\\|!\\)" nil t)))
 				       (if x
 					   (+ x 1)
 					 nil))
@@ -81,6 +81,8 @@
 		     (buffer-substring-no-properties	
 		      function-name-beg
 		      function-name-end))))
+
+	      (message function-name)
 
 	      ;; get arg index
 	      ;; 从0开始计数
@@ -132,9 +134,6 @@
 		    (setq function-doc-current-arg
 			  (replace-regexp-in-string (concat "[^(,]*(\\([^,]*,\\)\\{" (number-to-string arg-index) "\\}") "" function-doc))
 
-		    (message "try")
-		    (message function-doc-current-arg)
-
 
 		    (setq function-doc-current-arg
 			  (replace-regexp-in-string ",.*" ""  function-doc-current-arg))
@@ -149,6 +148,14 @@
 			   function-doc))
 
 		    function-doc))))))))))
+
+;;;###autoload
+(add-hook 'php+-mode-hook
+	  '(lambda ()
+	     (set
+	      (make-local-variable 'eldoc-documentation-function)
+	      'php-eldoc-function)
+	     (eldoc-mode)))
 
 ;;;###autoload
 (add-hook 'php-mode-hook
