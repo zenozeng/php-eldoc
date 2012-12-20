@@ -150,7 +150,7 @@
 		    function-doc))))))))))
 
 ;;;###autoload
-(if (boundp php+-mode-hook)
+(if (boundp 'php+-mode-hook)
     (add-hook 'php+-mode-hook
 	      '(lambda ()
 		 (set
@@ -159,7 +159,7 @@
 		 (eldoc-mode))))
 
 ;;;###autoload
-(if (boundp php-mode-hook)
+(if (boundp 'php-mode-hook)
     (add-hook 'php-mode-hook
 	      '(lambda ()
 		 (set
