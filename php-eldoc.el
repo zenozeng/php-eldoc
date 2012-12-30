@@ -82,8 +82,6 @@
 		      function-name-beg
 		      function-name-end))))
 
-	      (message function-name)
-
 	      ;; get arg index
 	      ;; 从0开始计数
 	      
